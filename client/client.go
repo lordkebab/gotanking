@@ -39,7 +39,6 @@ func NewClient(opts ...Option) (*WOTClient, error) {
 	}
 
 	return client, nil
-
 }
 
 // parseOpts overrides instantiated defaults
