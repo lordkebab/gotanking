@@ -13,7 +13,7 @@ const (
 )
 
 // Option is the function definition for functions overriding defaults
-type Option func(*Client) error
+type Option func(*WOTClient) error
 
 // WOTClient is the object to interface with the API
 type WOTClient struct {
@@ -56,7 +56,7 @@ func (c *WOTClient) parseOpts(opts ...Option) error {
 }
 
 // SetRealm sets the API endpoint to other realms
-func SetRealm(realm string) string {
+func SetRealm(realm string) Option {
 	var url string
 
 	switch realm {
@@ -72,5 +72,8 @@ func SetRealm(realm string) string {
 		url = "https://api.worldoftanks.com/wot/"
 	}
 
-	return url
+	return func(c *WOTClient) error {
+		c.baseURL = url
+		return nil
+	}
 }
