@@ -1,9 +1,8 @@
 package client
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -14,26 +13,69 @@ const (
 	DefaultClientTimeout time.Duration = 5 * time.Second
 )
 
+var (
+	// ErrNilApplicationID is raised when the client is instantiated without an API key
+	ErrNilApplicationID error = errors.New("Application ID cannot be nil")
+)
+
+// Option is the function definition for functions overriding defaults
+type Option func(*WOTClient) error
+
 // WOTClient is the object to interface with the API
 type WOTClient struct {
 	client        *http.Client
 	ApplicationID string
 	baseURL       string
+	realm         string
 }
 
 // NewClient returns a pointer to a new client object
-func NewClient(applicationID string, realm string) *WOTClient {
-	return &WOTClient{
+func NewClient(opts ...Option) (*WOTClient, error) {
+
+	c := &WOTClient{
 		client: &http.Client{
 			Timeout: DefaultClientTimeout,
 		},
-		ApplicationID: applicationID,
-		baseURL:       SetRealm(realm),
+		ApplicationID: "",
+		baseURL:       BaseURL,
+		realm:         "na",
+	}
+
+	if err := c.parseOpts(opts...); err != nil {
+		return nil, err
+	}
+
+	if c.ApplicationID == "" {
+		return nil, ErrNilApplicationID
+	}
+
+	return c, nil
+}
+
+// parseOpts overrides instantiated defaults
+func (c *WOTClient) parseOpts(opts ...Option) error {
+	// range over each option (function)
+	// overriding defaults in sequence
+	for _, option := range opts {
+		err := option(c)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// SetAppID sets the API key for the client
+func SetAppID(key string) Option {
+	return func(c *WOTClient) error {
+		c.ApplicationID = key
+		return nil
 	}
 }
 
 // SetRealm sets the API endpoint to other realms
-func SetRealm(realm string) string {
+func SetRealm(realm string) Option {
 	var url string
 
 	switch realm {
@@ -49,32 +91,9 @@ func SetRealm(realm string) string {
 		url = "https://api.worldoftanks.com/wot/"
 	}
 
-	return url
-}
-
-// SetTimeout allows overriding of the default 5 second client timeout
-func (w *WOTClient) SetTimeout(d time.Duration) {
-	w.client.Timeout = d
-}
-
-// OverrideURL overrides the default URL in the client
-func (w *WOTClient) OverrideURL(url string) {
-	w.baseURL = url
-}
-
-// GetPlayer retrieves a player record
-func (w *WOTClient) GetPlayer(playerName string) {
-	endpoint := "/account/list/?"
-
-	url := url.Values{}
-	url.Add("application_id", w.ApplicationID)
-	url.Add("search", playerName)
-	endpoint = w.baseURL + endpoint + url.Encode()
-
-	request, _ := http.NewRequest(http.MethodPost, endpoint, nil)
-	_, err := w.client.Do(request)
-
-	if err != nil {
-		fmt.Println(err)
+	return func(c *WOTClient) error {
+		c.baseURL = url
+		c.realm = realm
+		return nil
 	}
 }
