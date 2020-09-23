@@ -1,6 +1,7 @@
 package client
 
 import (
+	"errors"
 	"net/http"
 	"time"
 )
@@ -10,6 +11,11 @@ const (
 	BaseURL string = "https://api.worldoftanks.com/wot/"
 	// DefaultClientTimeout defines the client timeout value
 	DefaultClientTimeout time.Duration = 5 * time.Second
+)
+
+var (
+	// ErrNilApplicationID is raised when the client is instantiated without an API key
+	ErrNilApplicationID error = errors.New("Application ID cannot be nil")
 )
 
 // Option is the function definition for functions overriding defaults
@@ -26,19 +32,24 @@ type WOTClient struct {
 // NewClient returns a pointer to a new client object
 func NewClient(opts ...Option) (*WOTClient, error) {
 
-	client := &WOTClient{
+	c := &WOTClient{
 		client: &http.Client{
 			Timeout: DefaultClientTimeout,
 		},
-		ApplicationID: "nil",
+		ApplicationID: "",
 		baseURL:       BaseURL,
+		realm:         "na",
 	}
 
-	if err := client.parseOpts(opts...); err != nil {
+	if err := c.parseOpts(opts...); err != nil {
 		return nil, err
 	}
 
-	return client, nil
+	if c.ApplicationID == "" {
+		return nil, ErrNilApplicationID
+	}
+
+	return c, nil
 }
 
 // parseOpts overrides instantiated defaults
@@ -53,6 +64,14 @@ func (c *WOTClient) parseOpts(opts ...Option) error {
 	}
 
 	return nil
+}
+
+// SetAppID sets the API key for the client
+func SetAppID(key string) Option {
+	return func(c *WOTClient) error {
+		c.ApplicationID = key
+		return nil
+	}
 }
 
 // SetRealm sets the API endpoint to other realms
