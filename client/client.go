@@ -22,14 +22,14 @@ type WOTClient struct {
 }
 
 // NewClient returns a pointer to a new client object
-func NewClient(applicationID string, realm string) *WOTClient {
+func NewClient(applicationID string, realm string) (*WOTClient, error) {
 	return &WOTClient{
 		client: &http.Client{
 			Timeout: DefaultClientTimeout,
 		},
 		ApplicationID: applicationID,
 		baseURL:       SetRealm(realm),
-	}
+	}, nil
 }
 
 // SetRealm sets the API endpoint to other realms
