@@ -12,6 +12,11 @@ const (
 
 func TestClientSetup(t *testing.T) {
 	// application id should not be nil
+	t.Run("application id should not be nil", func(t *testing.T) {
+		_, err := NewClient()
+
+		assertError(t, err, ErrNilApplicationID)
+	})
 
 	// client sets realm appropriately
 	t.Run("client sets realm appropriately", func(t *testing.T) {
@@ -28,7 +33,7 @@ func TestClientSetup(t *testing.T) {
 		}
 
 		for _, tt := range realmTests {
-			got, _ := NewClient(SetRealm(tt.realm))
+			got, _ := NewClient(SetRealm(tt.realm), SetAppID("dummy"))
 			if got.baseURL != tt.want {
 				t.Errorf("got %q want %q", got.baseURL, tt.want)
 			}
@@ -37,11 +42,22 @@ func TestClientSetup(t *testing.T) {
 
 	// default realm is NA
 	t.Run("default realm is NA", func(t *testing.T) {
-		got, _ := NewClient()
+		got, _ := NewClient(SetAppID("dummy"))
 		want := "https://api.worldoftanks.com/wot/"
 
 		if got.baseURL != want {
 			t.Errorf("got %q want %q", got.baseURL, want)
 		}
 	})
+}
+
+func assertError(t *testing.T, got, want error) {
+	t.Helper()
+	if got == nil {
+		t.Fatal("expected an error here")
+	}
+
+	if got != want {
+		t.Errorf("got %q want %q", got, want)
+	}
 }
