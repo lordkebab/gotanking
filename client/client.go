@@ -20,6 +20,7 @@ type WOTClient struct {
 	client        *http.Client
 	ApplicationID string
 	baseURL       string
+	realm         string
 }
 
 // NewClient returns a pointer to a new client object
@@ -74,6 +75,7 @@ func SetRealm(realm string) Option {
 
 	return func(c *WOTClient) error {
 		c.baseURL = url
+		c.realm = realm
 		return nil
 	}
 }
