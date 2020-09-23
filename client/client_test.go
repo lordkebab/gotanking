@@ -36,4 +36,12 @@ func TestClientSetup(t *testing.T) {
 	})
 
 	// default realm is NA
+	t.Run("default realm is NA", func(t *testing.T) {
+		got, _ := NewClient()
+		want := "https://api.worldoftanks.com/wot/"
+
+		if got.baseURL != want {
+			t.Errorf("got %q want %q", got.baseURL, want)
+		}
+	})
 }
