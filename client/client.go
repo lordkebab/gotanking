@@ -1,9 +1,7 @@
 package client
 
 import (
-	"fmt"
 	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -14,6 +12,9 @@ const (
 	DefaultClientTimeout time.Duration = 5 * time.Second
 )
 
+// Option is the function definition for functions overriding defaults
+type Option func(*Client) error
+
 // WOTClient is the object to interface with the API
 type WOTClient struct {
 	client        *http.Client
@@ -22,14 +23,36 @@ type WOTClient struct {
 }
 
 // NewClient returns a pointer to a new client object
-func NewClient(applicationID string, realm string) (*WOTClient, error) {
-	return &WOTClient{
+func NewClient(opts ...Option) (*WOTClient, error) {
+
+	client := &WOTClient{
 		client: &http.Client{
 			Timeout: DefaultClientTimeout,
 		},
-		ApplicationID: applicationID,
-		baseURL:       SetRealm(realm),
-	}, nil
+		ApplicationID: "nil",
+		baseURL:       BaseURL,
+	}
+
+	if err := client.parseOpts(opts...); err != nil {
+		return nil, err
+	}
+
+	return client, nil
+
+}
+
+// parseOpts overrides instantiated defaults
+func (c *WOTClient) parseOpts(opts ...Option) error {
+	// range over each option (function)
+	// overriding defaults in sequence
+	for _, option := range opts {
+		err := option(c)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // SetRealm sets the API endpoint to other realms
@@ -50,31 +73,4 @@ func SetRealm(realm string) string {
 	}
 
 	return url
-}
-
-// SetTimeout allows overriding of the default 5 second client timeout
-func (w *WOTClient) SetTimeout(d time.Duration) {
-	w.client.Timeout = d
-}
-
-// OverrideURL overrides the default URL in the client
-func (w *WOTClient) OverrideURL(url string) {
-	w.baseURL = url
-}
-
-// GetPlayer retrieves a player record
-func (w *WOTClient) GetPlayer(playerName string) {
-	endpoint := "/account/list/?"
-
-	url := url.Values{}
-	url.Add("application_id", w.ApplicationID)
-	url.Add("search", playerName)
-	endpoint = w.baseURL + endpoint + url.Encode()
-
-	request, _ := http.NewRequest(http.MethodPost, endpoint, nil)
-	_, err := w.client.Do(request)
-
-	if err != nil {
-		fmt.Println(err)
-	}
 }
