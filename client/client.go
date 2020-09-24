@@ -74,6 +74,14 @@ func SetAppID(key string) Option {
 	}
 }
 
+// SetBaseURL sets the URL irrespective of the realm
+func SetBaseURL(url string) Option {
+	return func(c *WOTClient) error {
+		c.baseURL = url
+		return nil
+	}
+}
+
 // SetRealm sets the API endpoint to other realms
 func SetRealm(realm string) Option {
 	var url string

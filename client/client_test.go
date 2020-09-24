@@ -1,6 +1,8 @@
 package client
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -8,6 +10,12 @@ const (
 	appID      = "dummy"
 	realm      = "na"
 	playerName = "dummy"
+)
+
+var (
+	mux    *http.ServeMux
+	client *WOTClient
+	server *httptest.Server
 )
 
 func TestClientSetup(t *testing.T) {
@@ -49,6 +57,17 @@ func TestClientSetup(t *testing.T) {
 			t.Errorf("got %q want %q", got.baseURL, want)
 		}
 	})
+
+	// base URL can be changed
+	t.Run("base URL can be changed", func(t *testing.T) {
+		url := "http://localhost:8080/api/"
+		got, _ := NewClient(SetAppID("dummy"), SetBaseURL("http://localhost:8080/api/"))
+
+		if got.baseURL != url {
+			t.Errorf("got %q want %q", got.baseURL, url)
+		}
+
+	})
 }
 
 func assertError(t *testing.T, got, want error) {
@@ -59,5 +78,16 @@ func assertError(t *testing.T, got, want error) {
 
 	if got != want {
 		t.Errorf("got %q want %q", got, want)
+	}
+}
+
+func serverSetup() func() {
+	mux = http.NewServeMux()
+	server = httptest.NewServer(mux)
+
+	client, _ = NewClient(SetAppID("dummy"), SetBaseURL(server.URL))
+
+	return func() {
+		server.Close()
 	}
 }
