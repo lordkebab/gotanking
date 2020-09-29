@@ -1,6 +1,8 @@
 package client
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"time"
@@ -29,12 +31,17 @@ type WOTClient struct {
 	realm         string
 }
 
-// Map represents data from the encyclopedia/arenas endpoint
-type Map struct {
-	Data []MapData `json:"data`
+// Arena represents data from the encyclopedia/arenas endpoint
+type Arena struct {
+	Data map[string]ArenaRecord `json:"data"`
 }
 
-type MapData struct {
+// ArenaRecord represents a single arena record
+type ArenaRecord struct {
+	Name string `json:"name_i18n"`
+	Camo string `json:"camouflage_type"`
+	Desc string `json:"description"`
+	ID   string `json:"arena_id"`
 }
 
 // NewClient returns a pointer to a new client object
@@ -115,16 +122,24 @@ func SetRealm(realm string) Option {
 }
 
 // ListMaps queries the encyclopedia/arenas endpoint
-func (c *WOTClient) ListMaps() ([]Map, error) {
+func (c *WOTClient) ListMaps() (Arena, error) {
 	endpoint := "/encyclopedia/arenas"
-	resp, err := http.Get(c.baseURL + endpoint)
+	arenas := Arena{}
 
+	resp, err := http.Get(c.baseURL + endpoint)
 	if err != nil {
-		return nil, err
+		return arenas, err
 	}
 
-	// marshall into the model
+	body := new(bytes.Buffer)
+	body.ReadFrom(resp.Body)
+	b := body.Bytes()
 
-	return resp, nil
+	// unmarshall into the data model
+	err = json.Unmarshal(b, &arenas)
+	if err != nil {
+		return Arena{}, err
+	}
 
+	return arenas, nil
 }
