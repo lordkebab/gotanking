@@ -29,6 +29,14 @@ type WOTClient struct {
 	realm         string
 }
 
+// Map represents data from the encyclopedia/arenas endpoint
+type Map struct {
+	Data []MapData `json:"data`
+}
+
+type MapData struct {
+}
+
 // NewClient returns a pointer to a new client object
 func NewClient(opts ...Option) (*WOTClient, error) {
 
@@ -74,7 +82,7 @@ func SetAppID(key string) Option {
 	}
 }
 
-// SetBaseURL sets the URL irrespective of the realm
+// SetBaseURL sets the URL irrespective of the realm. This is used for testing against a test server.
 func SetBaseURL(url string) Option {
 	return func(c *WOTClient) error {
 		c.baseURL = url
@@ -104,4 +112,19 @@ func SetRealm(realm string) Option {
 		c.realm = realm
 		return nil
 	}
+}
+
+// ListMaps queries the encyclopedia/arenas endpoint
+func (c *WOTClient) ListMaps() ([]Map, error) {
+	endpoint := "/encyclopedia/arenas"
+	resp, err := http.Get(c.baseURL + endpoint)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// marshall into the model
+
+	return resp, nil
+
 }
