@@ -30,13 +30,13 @@ type WOTClient struct {
 }
 
 // NewClient returns a pointer to a new client object
-func NewClient(opts ...Option) (*WOTClient, error) {
+func NewClient(appID string, opts ...Option) (*WOTClient, error) {
 
 	c := &WOTClient{
 		client: &http.Client{
 			Timeout: DefaultClientTimeout,
 		},
-		ApplicationID: "",
+		ApplicationID: appID,
 		baseURL:       BaseURL,
 		realm:         "na",
 	}
