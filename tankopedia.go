@@ -1,6 +1,10 @@
 package gotanking
 
-package gotanking
+import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+)
 
 // Arena represents data from the encyclopedia/arenas endpoint
 type Arena struct {
@@ -15,12 +19,10 @@ type ArenaRecord struct {
 	ID   string `json:"arena_id"`
 }
 
-/*
-
 // ListMaps queries the encyclopedia/arenas endpoint
-func (c *WOTClient) ListMaps() (model.Arena, error) {
+func (c *WOTClient) ListMaps() (Arena, error) {
 	endpoint := "/encyclopedia/arenas"
-	arenas := model.Arena{}
+	arenas := Arena{}
 
 	resp, err := http.Get(c.baseURL + endpoint)
 	if err != nil {
@@ -31,12 +33,10 @@ func (c *WOTClient) ListMaps() (model.Arena, error) {
 	body.ReadFrom(resp.Body)
 	b := body.Bytes()
 
-	// unmarshall into the data model
 	err = json.Unmarshal(b, &arenas)
 	if err != nil {
-		return model.Arena{}, err
+		return Arena{}, err
 	}
 
 	return arenas, nil
 }
-*/
