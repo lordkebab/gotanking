@@ -20,12 +20,6 @@ var (
 )
 
 func TestClientSetup(t *testing.T) {
-	// application id should not be nil
-	t.Run("application id should not be nil", func(t *testing.T) {
-		_, err := NewClient()
-
-		assertError(t, err, ErrNilApplicationID)
-	})
 
 	// client sets realm appropriately
 	t.Run("client sets realm appropriately", func(t *testing.T) {
@@ -42,7 +36,7 @@ func TestClientSetup(t *testing.T) {
 		}
 
 		for _, tt := range realmTests {
-			got, _ := NewClient(SetRealm(tt.realm), SetAppID("dummy"))
+			got, _ := NewClient(appID, SetRealm(tt.realm))
 			if got.baseURL != tt.want {
 				t.Errorf("got %q want %q", got.baseURL, tt.want)
 			}
@@ -51,7 +45,7 @@ func TestClientSetup(t *testing.T) {
 
 	// default realm is NA
 	t.Run("default realm is NA", func(t *testing.T) {
-		got, _ := NewClient(SetAppID("dummy"))
+		got, _ := NewClient(appID)
 		want := "https://api.worldoftanks.com/wot/"
 
 		if got.baseURL != want {
@@ -62,7 +56,7 @@ func TestClientSetup(t *testing.T) {
 	// base URL can be changed
 	t.Run("base URL can be changed", func(t *testing.T) {
 		url := "http://localhost:8080/api/"
-		got, _ := NewClient(SetAppID("dummy"), SetBaseURL("http://localhost:8080/api/"))
+		got, _ := NewClient(appID, SetBaseURL("http://localhost:8080/api/"))
 
 		if got.baseURL != url {
 			t.Errorf("got %q want %q", got.baseURL, url)
@@ -87,7 +81,7 @@ func serverSetup() func() {
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
 
-	client, _ = NewClient(SetAppID("dummy"), SetBaseURL(server.URL))
+	client, _ = NewClient(appID, SetBaseURL(server.URL))
 
 	return func() {
 		server.Close()
