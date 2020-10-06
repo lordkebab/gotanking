@@ -1,9 +1,6 @@
 package gotanking
 
 import (
-	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 )
 
@@ -11,12 +8,6 @@ const (
 	appID      = "dummy"
 	realm      = "na"
 	playerName = "dummy"
-)
-
-var (
-	mux    *http.ServeMux
-	client *WOTClient
-	server *httptest.Server
 )
 
 func TestClientSetup(t *testing.T) {
@@ -75,25 +66,4 @@ func assertError(t *testing.T, got, want error) {
 	if got != want {
 		t.Errorf("got %q want %q", got, want)
 	}
-}
-
-func serverSetup() func() {
-	mux = http.NewServeMux()
-	server = httptest.NewServer(mux)
-
-	client, _ = NewClient(appID, SetBaseURL(server.URL))
-
-	return func() {
-		server.Close()
-	}
-}
-
-// fixture returns the test data for the path endpoint
-func fixture(path string) string {
-	b, err := ioutil.ReadFile("testdata/" + path)
-	if err != nil {
-		panic(err)
-	}
-
-	return string(b)
 }
