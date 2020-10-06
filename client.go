@@ -66,14 +66,6 @@ func (c *WOTClient) parseOpts(opts ...Option) error {
 	return nil
 }
 
-// SetAppID sets the API key for the client
-func SetAppID(key string) Option {
-	return func(c *WOTClient) error {
-		c.ApplicationID = key
-		return nil
-	}
-}
-
 // SetBaseURL sets the URL irrespective of the realm. This is used for testing against a test server.
 func SetBaseURL(url string) Option {
 	return func(c *WOTClient) error {
