@@ -6,6 +6,8 @@ import (
 	"errors"
 	"net/http"
 	"time"
+
+	"github.com/matts80/gotanking/model"
 )
 
 const (
@@ -29,19 +31,6 @@ type WOTClient struct {
 	ApplicationID string
 	baseURL       string
 	realm         string
-}
-
-// Arena represents data from the encyclopedia/arenas endpoint
-type Arena struct {
-	Data map[string]ArenaRecord `json:"data"`
-}
-
-// ArenaRecord represents a single arena record
-type ArenaRecord struct {
-	Name string `json:"name_i18n"`
-	Camo string `json:"camouflage_type"`
-	Desc string `json:"description"`
-	ID   string `json:"arena_id"`
 }
 
 // NewClient returns a pointer to a new client object
@@ -122,9 +111,9 @@ func SetRealm(realm string) Option {
 }
 
 // ListMaps queries the encyclopedia/arenas endpoint
-func (c *WOTClient) ListMaps() (Arena, error) {
+func (c *WOTClient) ListMaps() (model.Arena, error) {
 	endpoint := "/encyclopedia/arenas"
-	arenas := Arena{}
+	arenas := model.Arena{}
 
 	resp, err := http.Get(c.baseURL + endpoint)
 	if err != nil {
@@ -138,7 +127,7 @@ func (c *WOTClient) ListMaps() (Arena, error) {
 	// unmarshall into the data model
 	err = json.Unmarshal(b, &arenas)
 	if err != nil {
-		return Arena{}, err
+		return model.Arena{}, err
 	}
 
 	return arenas, nil
