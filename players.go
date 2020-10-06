@@ -1,4 +1,4 @@
-package model
+package gotanking
 
 import "fmt"
 

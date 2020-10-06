@@ -1,4 +1,4 @@
-package model
+package gotanking
 
 // Arena represents data from the encyclopedia/arenas endpoint
 type Arena struct {

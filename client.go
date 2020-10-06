@@ -1,13 +1,9 @@
-package client
+package gotanking
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"net/http"
 	"time"
-
-	"github.com/matts80/gotanking/model"
 )
 
 const (
@@ -108,27 +104,4 @@ func SetRealm(realm string) Option {
 		c.realm = realm
 		return nil
 	}
-}
-
-// ListMaps queries the encyclopedia/arenas endpoint
-func (c *WOTClient) ListMaps() (model.Arena, error) {
-	endpoint := "/encyclopedia/arenas"
-	arenas := model.Arena{}
-
-	resp, err := http.Get(c.baseURL + endpoint)
-	if err != nil {
-		return arenas, err
-	}
-
-	body := new(bytes.Buffer)
-	body.ReadFrom(resp.Body)
-	b := body.Bytes()
-
-	// unmarshall into the data model
-	err = json.Unmarshal(b, &arenas)
-	if err != nil {
-		return model.Arena{}, err
-	}
-
-	return arenas, nil
 }

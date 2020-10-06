@@ -1,7 +1,6 @@
-package client
+package gotanking
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -103,23 +102,4 @@ func fixture(path string) string {
 	}
 
 	return string(b)
-}
-
-func TestTankopediaEndpoints(t *testing.T) {
-	spinDown := serverSetup()
-	defer spinDown()
-
-	// encyclopedia/arenas
-	t.Run("encyclopedia/arenas", func(t *testing.T) {
-		mux.HandleFunc("/encyclopedia/arenas", func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			fmt.Fprintf(w, fixture("encyclopedia/arenas.json"))
-		})
-
-		_, err := client.ListMaps()
-		if err != nil {
-			t.Errorf("got error %q when not expecting one", err)
-		}
-	})
 }
