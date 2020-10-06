@@ -20,8 +20,12 @@ func TestListMaps(t *testing.T) {
 
 	})
 
-	_, err := client.ListMaps()
+	arena, err := client.ListMaps()
 	if err != nil {
-		t.Errorf("Error: %q", err.Error())
+		t.Error(err)
+	}
+
+	if len(arena.Data) == 0 {
+		t.Errorf("No maps returned")
 	}
 }
