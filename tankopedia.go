@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
+	"net/url"
 )
 
 // Arena represents data from the encyclopedia/arenas endpoint
@@ -19,24 +20,67 @@ type ArenaRecord struct {
 	ID   string `json:"arena_id"`
 }
 
+// MapInput holds display filters
+type MapInput struct {
+	// Fields you want displayed. Valid fields are:
+	//
+	//	* name_i18n
+	//	* description
+	//	* camouflage_type
+	Fields []string
+
+	// Language in which you want the results. Valid values are:
+	//
+	// "en" — English (by default)
+	//	"ru" — Русский
+	//	"pl" — Polski
+	//	"de" — Deutsch
+	//	"fr" — Français
+	//	"es" — Español
+	//	"zh-cn" — 简体中文
+	//	"zh-tw" — 繁體中文
+	//	"tr" — Türkçe
+	//	"cs" — Čeština
+	//	"th" — ไทย
+	//	"vi" — Tiếng Việt
+	//	"ko" — 한국어
+
+	Language string
+}
+
 // ListMaps queries the encyclopedia/arenas endpoint
-func (c *WOTClient) ListMaps() (Arena, error) {
+func (c *WOTClient) ListMaps(input *MapInput) (*Arena, error) {
 	endpoint := "/encyclopedia/arenas"
 	arenas := Arena{}
 
-	resp, err := http.Get(c.baseURL + endpoint)
+	v := url.Values{}
+
+	if input != nil {
+		// encode URL
+		v.Set("language", input.Language)
+
+		var fields string
+		for _, i := range input.Fields {
+			fields = fields + "," + i
+		}
+
+		v.Set("fields", fields)
+	}
+
+	resp, err := http.Get(c.baseURL + endpoint + "?" + v.Encode())
 	if err != nil {
-		return arenas, err
+		return &arenas, err
 	}
 
 	body := new(bytes.Buffer)
 	body.ReadFrom(resp.Body)
+
 	b := body.Bytes()
 
 	err = json.Unmarshal(b, &arenas)
 	if err != nil {
-		return Arena{}, err
+		return &arenas, err
 	}
 
-	return arenas, nil
+	return &arenas, nil
 }
