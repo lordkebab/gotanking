@@ -19,8 +19,11 @@ func TestGetAccount(t *testing.T) {
 	})
 
 	search := "lulz_man"
+	input := &AccountInput{
+		Language: "en",
+	}
 
-	_, err := client.GetAccount(search, nil)
+	_, err := client.GetAccount(search, input)
 
 	if err != nil {
 		t.Error(err)
