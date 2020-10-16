@@ -3,7 +3,6 @@ package gotanking
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -75,7 +74,7 @@ func (c *WOTClient) GetAccount(search string, input *AccountInput) (*Account, er
 
 		v.Set("fields", fields)
 	}
-	fmt.Println(c.baseURL + endpoint + "?" + v.Encode())
+
 	resp, err := http.Get(c.baseURL + endpoint + "?" + v.Encode())
 	if err != nil {
 		return &account, err
