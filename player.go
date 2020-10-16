@@ -28,7 +28,7 @@ type AccountInput struct {
 
 	// Language in which you want the results. Valid values are:
 	//
-	// "en" — English (by default)
+	//  "en" — English (by default)
 	//	"ru" — Русский
 	//	"pl" — Polski
 	//	"de" — Deutsch
