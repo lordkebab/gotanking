@@ -20,11 +20,9 @@ func TestGetAccount(t *testing.T) {
 
 	search := "lulz_man"
 
-	playerRec, err := client.GetAccount(search, nil)
+	_, err := client.GetAccount(search, nil)
 
 	if err != nil {
 		t.Error(err)
 	}
-
-	fmt.Println(playerRec)
 }

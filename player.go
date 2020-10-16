@@ -59,6 +59,7 @@ func (c *WOTClient) GetAccount(search string, input *AccountInput) (*Account, er
 	var account Account
 
 	v := url.Values{}
+	v.Set("search", search)
 	if input != nil {
 		v.Set("language", input.Language)
 		v.Set("limit", input.Limit)
