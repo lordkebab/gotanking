@@ -54,6 +54,7 @@ func (c *WOTClient) ListMaps(input *MapInput) (*Arena, error) {
 	arenas := Arena{}
 
 	v := url.Values{}
+	v.Set("application_id", c.ApplicationID)
 
 	if input != nil {
 		// encode URL
