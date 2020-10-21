@@ -12,7 +12,7 @@ func TestListMaps(t *testing.T) {
 
 	client, _ := NewClient("dummy", SetBaseURL(server.URL))
 
-	mux.HandleFunc("/encyclopedia/arenas", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/encyclopedia/arenas/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 
@@ -36,7 +36,7 @@ func TestDisplayFilter(t *testing.T) {
 
 	client, _ := NewClient("dummy", SetBaseURL(server.URL))
 
-	mux.HandleFunc("/encyclopedia/arenas", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/encyclopedia/arenas/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 

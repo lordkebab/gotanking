@@ -11,7 +11,7 @@ func TestGetAccount(t *testing.T) {
 	defer testServer()
 
 	client, _ := NewClient("dummy", SetBaseURL(server.URL))
-	mux.HandleFunc("/account/list", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/account/list/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 

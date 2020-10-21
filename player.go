@@ -55,7 +55,7 @@ type AccountInput struct {
 
 // GetAccount fetches a player's account record
 func (c *WOTClient) GetAccount(search string, input *AccountInput) (*Account, error) {
-	endpoint := "/account/list"
+	endpoint := "/account/list/"
 	var account Account
 
 	v := url.Values{}

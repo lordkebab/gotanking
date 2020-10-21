@@ -50,7 +50,7 @@ type MapInput struct {
 
 // ListMaps queries the encyclopedia/arenas endpoint
 func (c *WOTClient) ListMaps(input *MapInput) (*Arena, error) {
-	endpoint := "/encyclopedia/arenas"
+	endpoint := "/encyclopedia/arenas/"
 	arenas := Arena{}
 
 	v := url.Values{}
