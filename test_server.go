@@ -8,7 +8,6 @@ import (
 
 var (
 	mux    *http.ServeMux
-	client *WOTClient
 	server *httptest.Server
 )
 
@@ -16,8 +15,6 @@ var (
 func ServerSetup() func() {
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
-
-	client, _ = NewClient("dummy", SetBaseURL(server.URL))
 
 	return func() {
 		server.Close()
