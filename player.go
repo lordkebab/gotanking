@@ -91,5 +91,14 @@ func (c *WOTClient) GetAccount(search string, input *AccountInput) (*Account, er
 	}
 
 	return &account, nil
+}
 
+// GetAccountID is a convenience method to retrieve a player's account_id
+func (c *WOTClient) GetAccountID(search string) int {
+	resp, err := c.GetAccount(search, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	return resp.Data[0].AccountID
 }
