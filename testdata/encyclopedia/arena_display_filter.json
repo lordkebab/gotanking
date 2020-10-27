@@ -1,0 +1,143 @@
+{
+    "status": "ok",
+    "meta": {
+        "count": 45
+    },
+    "data": {
+        "05_prohorovka": {
+            "camouflage_type": "summer"
+        },
+        "59_asia_great_wall": {
+            "camouflage_type": "summer"
+        },
+        "36_fishing_bay": {
+            "camouflage_type": "summer"
+        },
+        "114_czech": {
+            "camouflage_type": "summer"
+        },
+        "11_murovanka": {
+            "camouflage_type": "summer"
+        },
+        "90_minsk": {
+            "camouflage_type": "summer"
+        },
+        "35_steppes": {
+            "camouflage_type": "summer"
+        },
+        "17_munchen": {
+            "camouflage_type": "summer"
+        },
+        "31_airfield": {
+            "camouflage_type": "desert"
+        },
+        "19_monastery": {
+            "camouflage_type": "summer"
+        },
+        "217_er_alaska": {
+            "camouflage_type": "winter"
+        },
+        "10_hills": {
+            "camouflage_type": "summer"
+        },
+        "222_er_clime": {
+            "camouflage_type": "summer"
+        },
+        "250_br_battle_city2-1": {
+            "camouflage_type": "winter"
+        },
+        "28_desert": {
+            "camouflage_type": "desert"
+        },
+        "112_eiffel_tower_ctf": {
+            "camouflage_type": "summer"
+        },
+        "101_dday": {
+            "camouflage_type": "summer"
+        },
+        "03_campania_big": {
+            "camouflage_type": "summer"
+        },
+        "212_epic_random_valley": {
+            "camouflage_type": "summer"
+        },
+        "60_asia_miao": {
+            "camouflage_type": "summer"
+        },
+        "01_karelia": {
+            "camouflage_type": "summer"
+        },
+        "29_el_hallouf": {
+            "camouflage_type": "desert"
+        },
+        "14_siegfried_line": {
+            "camouflage_type": "summer"
+        },
+        "13_erlenberg": {
+            "camouflage_type": "winter"
+        },
+        "83_kharkiv": {
+            "camouflage_type": "winter"
+        },
+        "04_himmelsdorf": {
+            "camouflage_type": "summer"
+        },
+        "99_poland": {
+            "camouflage_type": "summer"
+        },
+        "63_tundra": {
+            "camouflage_type": "summer"
+        },
+        "47_canada_a": {
+            "camouflage_type": "summer"
+        },
+        "251_br_battle_city3": {
+            "camouflage_type": "summer"
+        },
+        "18_cliff": {
+            "camouflage_type": "summer"
+        },
+        "45_north_america": {
+            "camouflage_type": "summer"
+        },
+        "105_germany": {
+            "camouflage_type": "summer"
+        },
+        "08_ruinberg": {
+            "camouflage_type": "summer"
+        },
+        "34_redshire": {
+            "camouflage_type": "summer"
+        },
+        "23_westfeld": {
+            "camouflage_type": "summer"
+        },
+        "02_malinovka": {
+            "camouflage_type": "summer"
+        },
+        "115_sweden": {
+            "camouflage_type": "winter"
+        },
+        "37_caucasus": {
+            "camouflage_type": "summer"
+        },
+        "06_ensk": {
+            "camouflage_type": "summer"
+        },
+        "38_mannerheim_line": {
+            "camouflage_type": "winter"
+        },
+        "95_lost_city_ctf": {
+            "camouflage_type": "desert"
+        },
+        "07_lakeville": {
+            "camouflage_type": "summer"
+        },
+        "33_fjord": {
+            "camouflage_type": "summer"
+        },
+        "44_north_america": {
+            "camouflage_type": "summer"
+        }
+    }
+}
