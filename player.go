@@ -224,7 +224,5 @@ func (c *WOTClient) GetPlayerPersonalData(accountID int, input *PlayerPersonalDa
 		return &playerData, err
 	}
 
-	fmt.Println(playerData)
-
 	return &playerData, nil
 }
