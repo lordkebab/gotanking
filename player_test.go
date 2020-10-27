@@ -51,3 +51,25 @@ func TestGetAccountID(t *testing.T) {
 		t.Errorf("got %d want %d", accountNumber, want)
 	}
 }
+
+func TestGetPlayerInfo(t *testing.T) {
+	testServer := ServerSetup()
+	defer testServer()
+
+	client, _ := NewClient("dummy", SetBaseURL(server.URL))
+	mux.HandleFunc("/account/info/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		fmt.Fprintf(w, Fixture("account/info.json"))
+	})
+
+	resp, _ := client.GetPlayerPersonalData(123, nil)
+
+	want := 8165
+	treesCut := resp.Data["1008273454"].Statistics.TreesCut
+
+	if treesCut != want {
+		t.Errorf("Got %q want %q", treesCut, want)
+	}
+}
