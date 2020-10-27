@@ -93,3 +93,23 @@ func TestGetPlayerVehicles(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestGetPlayerAchievements(t *testing.T) {
+	testServer := ServerSetup()
+	defer testServer()
+
+	client, _ := NewClient("dummy", SetBaseURL(server.URL))
+	mux.HandleFunc("/account/achievements/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		fmt.Fprintf(w, Fixture("account/achievements.json"))
+	})
+
+	accountID := 123
+
+	_, err := client.GetPlayerAchievements(accountID, nil)
+	if err != nil {
+		t.Error(err)
+	}
+}

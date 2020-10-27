@@ -184,6 +184,120 @@ type PlayerVehiclesInput struct {
 	TankID []int
 }
 
+// PlayerAchievements holds a player's achievements
+type PlayerAchievements struct {
+	Data map[string]PlayerAchievementsData `json:"data"`
+}
+
+// PlayerAchievementsData contains all the achievement categories
+type PlayerAchievementsData struct {
+	Achievements PlayerAchievementsRec `json:"achievements"`
+	Frags        PlayerFragsRec        `json:"frags"`
+	MaxSeries    PlayerMaxSeriesRec    `json:"max_series"`
+}
+
+// PlayerAchievementsRec contains all earned achievements
+type PlayerAchievementsRec struct {
+	CariusMedal                   int `json:"medalCarius"`
+	Aimer                         int `json:"aimer"`
+	Invader                       int `json:"invader"`
+	ShootToKill                   int `json:"shootToKill"`
+	June20                        int `json:"june20"`
+	MedalEkins                    int `json:"medalEkins"`
+	WtHunterWins                  int `json:"wtHunterWins"`
+	Duelist                       int `json:"duelist"`
+	TitleSniper                   int `json:"titleSniper"`
+	LeClercMedal                  int `json:"medalLeClerc"`
+	Demolition                    int `json:"demolition"`
+	Supporter                     int `json:"supporter"`
+	SteelWall                     int `json:"steelwall"`
+	LehvaslaihoMedal              int `json:"medalLehvaslaiho"`
+	AbramsMedal                   int `json:"medalAbrams"`
+	September20                   int `json:"september20"`
+	PoppelMedal                   int `json:"medalPoppel"`
+	PascucciMedal                 int `json:"medalPascucci"`
+	ReliableComrade               int `json:"reliableComrade"`
+	MainGun                       int `json:"mainGun"`
+	Kamikaze                      int `json:"kamikaze"`
+	TenYearsCoundownParticipation int `json:"TenYearsCountdownParticipation"`
+	TenYearsCountdownStageMedal   int `json:"TenYearsCountdownStageMedal"`
+	FirstMerit                    int `json:"firstMerit"`
+	Warrior                       int `json:"warrior"`
+	ArmorPiercer                  int `json:"armorPiercer"`
+	Even                          int `json:"even"`
+	WtBossWins                    int `json:"wtBossWins"`
+	Arsonist                      int `json:"arsonist"`
+	BrothersInArmMedal            int `json:"medalBrothersInArms"`
+	IronMan                       int `json:"ironMan"`
+	ReadyForBattleMT              int `json:"readyForBattleMT"`
+	Sniper2                       int `json:"sniper2"`
+	OskinMedal                    int `json:"medalOskin"`
+	Charmed                       int `json:"charmed"`
+	October20                     int `json:"october20"`
+	Fighter                       int `json:"fighter"`
+	LavrinenkoMedal               int `json:"medalLavrinenko"`
+	Impenetrable                  int `json:"impenetrable"`
+	Sturdy                        int `json:"sturdy"`
+	KayMedal                      int `json:"medalKay"`
+	FiveYearsOfService            int `json:"05YearsOfService"`
+	HandOfDeath                   int `json:"handOfDeath"`
+	BoneCrusher                   int `json:"bonecrusher"`
+	WFC2014                       int `json:"WFC2014"`
+	DumitruMedal                  int `json:"medalDumitru"`
+	EvilEye                       int `json:"evileye"`
+	KnispelMedal                  int `json:"medalKnispel"`
+}
+
+// PlayerFragsRec contains achievement progress
+type PlayerFragsRec struct {
+	CrucialShotMedal         int `json:"crucialShotMedal"`
+	InfiltratorMedal         int `json:"infiltratorMedal"`
+	SentinelMedal            int `json:"sentinelMedal"`
+	PrematureDetonationMedal int `json:"prematureDetonationMedal"`
+	FightingReconMedal       int `json:"fightingReconnaissanceMedal"`
+	FireAndSteelMedal        int `json:"fireAndSteelMedal"`
+	RangerMedal              int `json:"rangerMedal"`
+	ReliableComrade          int `json:"reliableComrade"`
+	WolfAmongSheepMedal      int `json:"wolfAmongSheepMedal"`
+	HeavyFireMedal           int `json:"heavyFireMedal"`
+	BruteForceMedal          int `json:"bruteForceMedal"`
+	GuerrillaMedal           int `json:"guerrilaMedal"`
+	PromisingFighterMedal    int `json:"promisingFighterMedal"`
+	PyromaniacMedal          int `json:"pyromaniacMedal"`
+	GeniusForWarMedal        int `json:"geniusForWarMedal"`
+	Sinai                    int `json:"sinai"`
+	BeastHunter              int `json:"beastHunter"`
+	PattonValley             int `json:"pattonValley"`
+}
+
+// PlayerAchievementsInput holds filters and query parameters for player achievements
+type PlayerAchievementsInput struct {
+	// Fields you want displayed. Valid values are:
+	//
+	// * achievements
+	// * frags
+	// * max_series
+	Fields []string
+
+	// Language for the results
+	Language string
+}
+
+// PlayerMaxSeriesRec contains the maximum achievement series values
+type PlayerMaxSeriesRec struct {
+	ArmorPiercer         int `json:"armorPiercer"`
+	Aimer                int `json:"aimer"`
+	TitleSniper          int `json:"titleSniper"`
+	TacticalBreakthrough int `json:"tacticalBreakthrough"`
+	Invincible           int `json:"invincible"`
+	VictoryMarch         int `json:"victoryMarch"`
+	DeathTrack           int `json:"deathTrack"`
+	EFC2016              int `json:"EFC2016"`
+	DieHard              int `json:"dieHard"`
+	WFC2014              int `json:"WFC2014"`
+	HandOfDeath          int `json:"handOfDeath"`
+}
+
 // GetAccount fetches a player's account record
 func (c *WOTClient) GetAccount(search string, input *AccountInput) (*Account, error) {
 	endpoint := "/account/list/"
@@ -320,4 +434,42 @@ func (c *WOTClient) GetPlayerVehicles(accountID int, input *PlayerVehiclesInput)
 	}
 
 	return &playerVehicles, nil
+}
+
+// GetPlayerAchievements returns player achievements
+func (c *WOTClient) GetPlayerAchievements(accountID int, input *PlayerAchievementsInput) (*PlayerAchievements, error) {
+	endpoint := "/account/achievements/"
+	var playerAchievements PlayerAchievements
+
+	v := url.Values{}
+	v.Set("application_id", c.ApplicationID)
+
+	v.Set("account_id", fmt.Sprint(accountID))
+	if input != nil {
+
+		var fields string
+		for _, i := range input.Fields {
+			fields = fields + "," + i
+		}
+		v.Set("fields", fields)
+
+		v.Set("language", input.Language)
+	}
+
+	resp, err := http.Get(c.baseURL + endpoint + "?" + v.Encode())
+	if err != nil {
+		return &playerAchievements, err
+	}
+
+	body := new(bytes.Buffer)
+	body.ReadFrom(resp.Body)
+
+	b := body.Bytes()
+
+	err = json.Unmarshal(b, &playerAchievements)
+	if err != nil {
+		return &playerAchievements, err
+	}
+
+	return &playerAchievements, nil
 }
