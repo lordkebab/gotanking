@@ -134,6 +134,56 @@ type PlayerPersonalDataInput struct {
 	Fields []string
 }
 
+// PlayerVehicles contains all tanks owned by a player
+type PlayerVehicles struct {
+	Data map[string][]PlayerVehiclesRec
+}
+
+// PlayerVehiclesRec contains a record of a particular vehicle
+type PlayerVehiclesRec struct {
+	Statistics struct {
+		Wins    int `json:"wins"`
+		Battles int `json:"battles"`
+	}
+	MarkOfMastery int `json:"mark_of_mastery"`
+	TankID        int `json:"tank_id"`
+}
+
+// PlayerVehiclesInput holds filters and query parameters for vehicle details
+type PlayerVehiclesInput struct {
+	// Access token for private data.
+	AccessToken string
+
+	// Fields you want displayed. Valid values are:
+	//
+	// * mark_of_mastery (0: none, 1: 3rd class, 2: 2nd class, 3: 1st class, 4: ace tanker)
+	// * tank_id
+	// * statistics
+	// * statistics.battles
+	// * statistics.wins
+	Fields []string
+
+	// Language in which you want the results. Valid values are:
+	//
+	//  "en" — English (by default)
+	//	"ru" — Русский
+	//	"pl" — Polski
+	//	"de" — Deutsch
+	//	"fr" — Français
+	//	"es" — Español
+	//	"zh-cn" — 简体中文
+	//	"zh-tw" — 繁體中文
+	//	"tr" — Türkçe
+	//	"cs" — Čeština
+	//	"th" — ไทย
+	//	"vi" — Tiếng Việt
+	//	"ko" — 한국어
+	Language string
+
+	// Tank or Tanks ID
+	TankID []int
+}
+
 // GetAccount fetches a player's account record
 func (c *WOTClient) GetAccount(search string, input *AccountInput) (*Account, error) {
 	endpoint := "/account/list/"
@@ -225,4 +275,49 @@ func (c *WOTClient) GetPlayerPersonalData(accountID int, input *PlayerPersonalDa
 	}
 
 	return &playerData, nil
+}
+
+// GetPlayerVehicles returns all tanks owned by a player
+func (c *WOTClient) GetPlayerVehicles(accountID int, input *PlayerVehiclesInput) (*PlayerVehicles, error) {
+	endpoint := "/account/tanks/"
+	var playerVehicles PlayerVehicles
+
+	v := url.Values{}
+	v.Set("application_id", c.ApplicationID)
+
+	v.Set("account_id", fmt.Sprint(accountID))
+	if input != nil {
+		v.Set("access_token", input.AccessToken)
+
+		var tanks string
+		for _, i := range input.TankID {
+			tanks = tanks + "," + fmt.Sprint(i)
+		}
+		v.Set("tank_id", tanks)
+
+		var fields string
+		for _, i := range input.Fields {
+			fields = fields + "," + i
+		}
+		v.Set("fields", fields)
+
+		v.Set("language", input.Language)
+	}
+
+	resp, err := http.Get(c.baseURL + endpoint + "?" + v.Encode())
+	if err != nil {
+		return &playerVehicles, err
+	}
+
+	body := new(bytes.Buffer)
+	body.ReadFrom(resp.Body)
+
+	b := body.Bytes()
+
+	err = json.Unmarshal(b, &playerVehicles)
+	if err != nil {
+		return &playerVehicles, err
+	}
+
+	return &playerVehicles, nil
 }

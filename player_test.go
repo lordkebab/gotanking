@@ -52,7 +52,7 @@ func TestGetAccountID(t *testing.T) {
 	}
 }
 
-func TestGetPlayerInfo(t *testing.T) {
+func TestGetPlayerPersonalData(t *testing.T) {
 	testServer := ServerSetup()
 	defer testServer()
 
@@ -71,5 +71,25 @@ func TestGetPlayerInfo(t *testing.T) {
 
 	if treesCut != want {
 		t.Errorf("Got %q want %q", treesCut, want)
+	}
+}
+
+func TestGetPlayerVehicles(t *testing.T) {
+	testServer := ServerSetup()
+	defer testServer()
+
+	client, _ := NewClient("dummy", SetBaseURL(server.URL))
+	mux.HandleFunc("/account/tanks/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		fmt.Fprintf(w, Fixture("account/tanks.json"))
+	})
+
+	accountID := 123
+
+	_, err := client.GetPlayerVehicles(accountID, nil)
+	if err != nil {
+		t.Error(err)
 	}
 }
